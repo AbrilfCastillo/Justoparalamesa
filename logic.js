@@ -2,6 +2,13 @@ const areaTexto = document.getElementById("areaTexto");
 let botonCalcular = document.getElementById("botonCalcular");
 let botonMasIngredientes = document.getElementById("botonMasIngredientes");
 const botonCopiar = document.getElementById("botonCopiar");
+let botonquitarIngrediente = document.getElementById("botonquitarIngrediente");
+botonquitarIngrediente.style.visibility = "hidden";
+
+let botonesagregarquitar = document.getElementById("botonesagregarquitar");
+let columnaIngredientes = document.getElementById("columnaIngredientes");
+let columnaCantidad = document.getElementById("columnaCantidad");
+let columnaUnidad = document.getElementById("columnaUnidad");
 
 function ajustarReceta() {
   /*Obtención de elementos*/
@@ -51,54 +58,46 @@ function ajustarReceta() {
     ingrediente;
   areaTexto.value = mensaje;
 }
-let botonesagregarquitar = document.getElementById("botonesagregarquitar");
-let columnaIngredientes = document.getElementById("columnaIngredientes");
-let columnaCantidad = document.getElementById("columnaCantidad");
-let columnaUnidad = document.getElementById("columnaUnidad");
-function agregarIngredientes() {
+
+function agregarIngrediente() {
   let nuevoIngrediente = document.createElement("input");
   let cantidadNuevoIngrediente = document.createElement("input");
   let unidadNuevoIngrediente = document.createElement("select");
-  let botonquitarIngrediente = document.createElement("button");
-  botonquitarIngrediente.innerText = "-";
-  botonquitarIngrediente.classList.add("botones");
   nuevoIngrediente.type = "text";
   cantidadNuevoIngrediente.type = "number";
-  botonquitarIngrediente.addEventListener("click", function () {
-    quitarIngrediente(
-      nuevoIngrediente,
-      cantidadNuevoIngrediente,
-      unidadNuevoIngrediente,
-      botonquitarIngrediente
-    );
-  });
-  if (columnaIngredientes.children.length <= 1) {
-    botonquitarIngrediente.style.display = "none";
-  } else {
-    botonquitarIngrediente.style.display = "inline-block";
-  }
+
   columnaIngredientes.appendChild(nuevoIngrediente);
   columnaCantidad.appendChild(cantidadNuevoIngrediente);
   columnaUnidad.appendChild(unidadNuevoIngrediente);
-  botonesagregarquitar.appendChild(botonquitarIngrediente);
+
+  // Hace visible el botón de quitar
+  botonquitarIngrediente.style.visibility = "visible";
 }
 
-function quitarIngrediente(
-  nuevoIngrediente,
-  cantidadNuevoIngrediente,
-  unidadNuevoIngrediente,
-  botonquitarIngrediente
-) {
-  columnaIngredientes.removeChild(nuevoIngrediente);
-  columnaCantidad.removeChild(cantidadNuevoIngrediente);
-  columnaUnidad.removeChild(unidadNuevoIngrediente);
+function quitarIngrediente() {
+  if (columnaIngredientes.children.length > 1) {
+    let ultimoIngrediente = columnaIngredientes.lastElementChild;
+    let ultimaCantidad = columnaCantidad.lastElementChild;
+    let ultimaUnidad = columnaUnidad.lastElementChild;
+
+    columnaIngredientes.removeChild(ultimoIngrediente);
+    columnaCantidad.removeChild(ultimaCantidad);
+    columnaUnidad.removeChild(ultimaUnidad);
+  }
+
+  // Oculta el botón de quitar si ya no hay suficientes elementos
+  if (columnaIngredientes.children.length <= 1) {
+    botonquitarIngrediente.style.visibility = "hidden";
+  }
 }
 
 function copiarTexto() {
   areaTexto.select();
   document.execCommand("copy");
 }
-/*Funciones botones*/
+
+/* Funciones botones */
 botonCalcular.addEventListener("click", ajustarReceta);
-botonMasIngredientes.addEventListener("click", agregarIngredientes);
+botonMasIngredientes.addEventListener("click", agregarIngrediente);
+botonquitarIngrediente.addEventListener("click", quitarIngrediente);
 botonCopiar.addEventListener("click", copiarTexto);
